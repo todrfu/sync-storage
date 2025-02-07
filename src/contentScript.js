@@ -2,8 +2,6 @@
  * 监听来自background script的消息
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('Content script收到消息:', request);
-  
   if (request.action === 'getStorageData') {
     const data = {
       localStorage: request.options.localStorage ? getLocalStorageData() : null,
@@ -15,11 +13,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   
   if (request.action === 'setStorageData') {
-    if (request.data.localStorage) {
-      setLocalStorageData(request.data.localStorage);
+    const { data, clearBeforeSync } = request;
+    if (data.localStorage) {
+      setLocalStorageData(data.localStorage, clearBeforeSync);
     }
-    if (request.data.sessionStorage) {
-      setSessionStorageData(request.data.sessionStorage);
+    if (data.sessionStorage) {
+      setSessionStorageData(data.sessionStorage, clearBeforeSync);
     }
     sendResponse({ success: true });
     return true;
@@ -55,9 +54,13 @@ function getSessionStorageData() {
 /**
  * 设置localStorage数据
  * @param {object} data 
+ * @param {boolean} clearBeforeSync 是否在同步前清空已有数据
  */
-function setLocalStorageData(data) {
-  localStorage.clear();
+function setLocalStorageData(data, clearBeforeSync = false) {
+  if (clearBeforeSync) {
+    localStorage.clear();
+  }
+  // 覆盖或新增数据
   for (const [key, value] of Object.entries(data)) {
     localStorage.setItem(key, value);
   }
@@ -66,9 +69,13 @@ function setLocalStorageData(data) {
 /**
  * 设置sessionStorage数据
  * @param {object} data 
+ * @param {boolean} clearBeforeSync 是否在同步前清空已有数据
  */
-function setSessionStorageData(data) {
-  sessionStorage.clear();
+function setSessionStorageData(data, clearBeforeSync = false) {
+  if (clearBeforeSync) {
+    sessionStorage.clear();
+  }
+  // 覆盖或新增数据
   for (const [key, value] of Object.entries(data)) {
     sessionStorage.setItem(key, value);
   }

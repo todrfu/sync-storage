@@ -1,7 +1,7 @@
 {
   "name": "sync-storage",
   "version": "0.0.1",
-  "description": "sync data from specified domains to the current domain",
+  "description": "A chrome extension to sync data from specified domains to the current domain",
   "scripts": {
     "build": "node build.js"
   },

@@ -181,7 +181,8 @@ async function syncStorage(sourceUrl, targetUrl, syncOptions) {
         try {
           await chrome.tabs.sendMessage(tab.id, {
             action: 'setStorageData',
-            data: response.data
+            data: response.data,
+            clearBeforeSync: syncOptions.clearBeforeSync
           });
         } catch (err) {
           console.error(`同步到标签页 ${tab.url} 失败:`, err);

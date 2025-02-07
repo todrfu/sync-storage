@@ -1,10 +1,11 @@
-const sourceDomainInput = document.getElementById('sourceDomain');
-const targetDomainInput = document.getElementById('targetDomain');
+const sourceUrlInput = document.getElementById('sourceUrl');
+const targetUrlInput = document.getElementById('targetUrl');
 const cookieCheckbox = document.getElementById('cookieSync');
 const localStorageCheckbox = document.getElementById('localStorageSync');
 const sessionStorageCheckbox = document.getElementById('sessionStorageSync');
 const syncButton = document.getElementById('syncButton');
 const statusDiv = document.getElementById('status');
+const clearBeforeSyncCheckbox = document.getElementById('clearBeforeSync');
 
 /**
  * 获取当前标签页的域名并设置为目标域名输入框的值
@@ -12,7 +13,7 @@ const statusDiv = document.getElementById('status');
 chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
   if (tabs[0]?.url) {
     const url = new URL(tabs[0].url);
-    targetDomainInput.value = url.origin;
+    targetUrlInput.value = url.origin;
     
     await checkCurrentPage();
   }
@@ -21,14 +22,16 @@ chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
 /**
  * 加载保存的配置
  */
-chrome.storage.local.get(['sourceDomain', 'syncOptions'], (result) => {
-  if (result.sourceDomain) {
-    sourceDomainInput.value = result.sourceDomain;
+chrome.storage.local.get(['sourceUrl', 'syncOptions'], (result) => {
+  if (result.sourceUrl) {
+    sourceUrlInput.value = result.sourceUrl;
   }
   if (result.syncOptions) {
     cookieCheckbox.checked = result.syncOptions.cookie;
     localStorageCheckbox.checked = result.syncOptions.localStorage;
     sessionStorageCheckbox.checked = result.syncOptions.sessionStorage;
+    // 清空本地数据配置默认关闭，不保留上一次选择结果
+    // clearBeforeSyncCheckbox.checked = result.syncOptions.clearBeforeSync || false;
   }
 });
 
@@ -59,15 +62,17 @@ async function checkCurrentPage() {
  */
 function saveConfig() {
   const config = {
-    sourceDomain: sourceDomainInput.value,
-    targetDomain: targetDomainInput.value,
+    sourceUrl: sourceUrlInput.value?.trim(),
+    targetUrl: targetUrlInput.value?.trim(),
     syncOptions: {
       cookie: cookieCheckbox.checked,
       localStorage: localStorageCheckbox.checked,
-      sessionStorage: sessionStorageCheckbox.checked
+      sessionStorage: sessionStorageCheckbox.checked,
+      clearBeforeSync: clearBeforeSyncCheckbox.checked
     }
   };
   chrome.storage.local.set(config);
+  return config;
 }
 
 /**
@@ -90,17 +95,16 @@ syncButton.addEventListener('click', async () => {
     return;
   }
   
-  saveConfig();
+  const config = saveConfig();
   
   try {
-    const sourceUrl = sourceDomainInput.value.trim();
+    const { sourceUrl, targetUrl } = config || {};
     // 非http和https的域名则报错
     if (!/^https?:\/\//i.test(sourceUrl)) {
       showStatus('请输入正确的源域名，格式如：https://xxx.com 或 http://xxx.com');
       return;
     }
     
-    const targetUrl = targetDomainInput.value.trim();
     if (!targetUrl) {
       showStatus('未检测到当前页面的域名');
       return;
@@ -109,15 +113,7 @@ syncButton.addEventListener('click', async () => {
     // 发送消息给background script开始同步
     const response = await chrome.runtime.sendMessage({
       action: 'startSync',
-      config: {
-        sourceUrl,
-        targetUrl,
-        syncOptions: {
-          cookie: cookieCheckbox.checked,
-          localStorage: localStorageCheckbox.checked,
-          sessionStorage: sessionStorageCheckbox.checked
-        }
-      }
+      config,
     });
 
     if (response.success) {

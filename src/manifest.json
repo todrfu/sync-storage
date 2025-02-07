@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "跨域数据同步助手",
-  "version": "1.0",
-  "description": "自动同步跨域Cookie和Storage数据，支持http和https",
+  "name": "Sync Storage",
+  "version": "0.0.1",
+  "description": "Automatically synchronize storage data from specified domains to the current domain",
   "permissions": [
     "tabs",
     "storage",

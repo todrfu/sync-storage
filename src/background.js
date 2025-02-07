@@ -162,8 +162,8 @@ async function syncStorage(sourceUrl, targetUrl, syncOptions) {
       const allTabs = await chrome.tabs.query({});
       const targetUrlObj = new URL(targetUrl);
       
-      // 手动匹配目标标签页
-      const targetTab = allTabs.find(tab => {
+      // 找到所有匹配的目标标签页
+      const targetTabs = allTabs.filter(tab => {
         try {
           const tabUrl = new URL(tab.url);
           return tabUrl.origin === targetUrlObj.origin;
@@ -172,14 +172,26 @@ async function syncStorage(sourceUrl, targetUrl, syncOptions) {
         }
       });
 
-      if (!targetTab) {
+      if (targetTabs.length === 0) {
         throw new Error('未找到目标域名的标签页');
       }
 
-      await chrome.tabs.sendMessage(targetTab.id, {
-        action: 'setStorageData',
-        data: response.data
-      });
+      // 向所有匹配的标签页发送消息
+      await Promise.all(targetTabs.map(async (tab) => {
+        try {
+          await chrome.tabs.sendMessage(tab.id, {
+            action: 'setStorageData',
+            data: response.data
+          });
+        } catch (err) {
+          console.error(`同步到标签页 ${tab.url} 失败:`, err);
+        }
+      }));
+
+      // 如果有同步失败的标签页，给出提示
+      if (targetTabs.length > 1) {
+        console.log(`成功同步到 ${targetTabs.length} 个标签页`);
+      }
     }
 
   } catch (error) {

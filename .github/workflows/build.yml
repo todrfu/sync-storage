@@ -1,0 +1,49 @@
+name: Build ChromeExtension
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build CRX
+        env:
+          EXTENSION_PRIVATE_KEY: ${{ secrets.EXTENSION_PRIVATE_KEY }}
+        run: npm run build
+
+      - name: Upload CRX
+        uses: actions/upload-artifact@v4
+        with:
+          name: sync-storage.crx
+          path: sync-storage.crx
+
+      - name: Update README
+        run: |
+          sed -i "s|CRX_PLACEHOLDER_URL|https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|g" README.md
+          
+      - name: Commit README
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "docs: update crx download link [skip ci]" || exit 0
+          git push
+      

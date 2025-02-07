@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "跨域数据同步助手",
+  "version": "1.0",
+  "description": "自动同步跨域Cookie和Storage数据，支持http和https",
+  "permissions": [
+    "tabs",
+    "storage",
+    "cookies",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/enabled_16.png",
+      "48": "icons/enabled_48.png",
+      "128": "icons/enabled_128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/enabled_16.png",
+    "48": "icons/enabled_48.png",
+    "128": "icons/enabled_128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ]
+} 

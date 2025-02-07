@@ -1,0 +1,11 @@
+{
+  "name": "sync-storage",
+  "version": "0.0.1",
+  "description": "sync data from specified domains to the current domain",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "crx": "^5.0.1"
+  }
+}

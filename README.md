@@ -23,7 +23,7 @@ This Chrome extension helps developers automatically synchronize data (Cookies, 
 
 ### CRX File
 
-1. [Download the CRX file](CRX_PLACEHOLDER_URL)
+1. [Download the CRX file](https://github.com/todrfu/sync-storage/actions/runs/13216106879)
 2. Open Chrome DevTools and click the extension icon in the toolbar
 3. Click the "Load unpacked" button
 4. Select the CRX file

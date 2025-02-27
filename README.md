@@ -23,7 +23,7 @@
 
 ### CRX 文件
 
-1. [下载 CRX 文件](CRX_PLACEHOLDER_URL)
+1. [下载 CRX 文件](https://github.com/todrfu/sync-storage/actions/runs/13558338214)
 2. 打开 Chrome 开发者工具，点击工具栏中的扩展图标
 3. 点击"加载已解压的扩展"按钮
 4. 选择 CRX 文件

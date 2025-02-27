@@ -2,17 +2,16 @@
  * 监听来自background script的消息
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'getStorageData') {
+  if (request.action === 'drfu:sync-storage:get-storage-data') {
     const data = {
       localStorage: request.options.localStorage ? getLocalStorageData() : null,
       sessionStorage: request.options.sessionStorage ? getSessionStorageData() : null
     };
     
     sendResponse({ data });
-    return true;
   }
   
-  if (request.action === 'setStorageData') {
+  if (request.action === 'drfu:sync-storage:set-storage-data') {
     const { data, clearBeforeSync } = request;
     if (data.localStorage) {
       setLocalStorageData(data.localStorage, clearBeforeSync);
@@ -21,7 +20,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       setSessionStorageData(data.sessionStorage, clearBeforeSync);
     }
     sendResponse({ success: true });
-    return true;
   }
 });
 

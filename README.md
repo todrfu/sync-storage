@@ -1,32 +1,31 @@
-# Chrome Extension - Sync Storage
+# Chrome 扩展 - 同步存储
 
-[English](README.md) | [中文](README_zh.md)
+[中文](README.md) | [English](README_en.md)
 
-This Chrome extension helps developers automatically synchronize data (Cookies, LocalStorage, SessionStorage) from specified domains to the current domain.
+这个 Chrome 扩展帮助开发者自动同步指定域名下的数据（Cookies、LocalStorage、SessionStorage）到当前域名。
 
-1. Configure the source domain (the domain where the data originates)
-2. Select the types of data to synchronize, supporting the following three:
+1. 配置源域（数据来源的域名）
+2. 选择要同步的数据类型，支持以下三种：
    - Cookies
    - LocalStorage 
    - SessionStorage
-3. One-click data synchronization
-4. Real-time display of synchronization status and results
+3. 一键数据同步
+4. 实时显示同步状态和结果
 
-## Installation
+## 安装
 
-### Source Code
+### 源代码
 
-1. Download the code
-2. Open Chrome DevTools and click the extension icon in the toolbar
-3. Click the "Load unpacked" button
-4. Select the folder (`src`) where the code is located
+1. 下载代码
+2. 打开 Chrome 开发者工具，点击工具栏中的扩展图标
+3. 点击"加载已解压的扩展"按钮
+4. 选择代码所在的文件夹（`src`）
 
-### CRX File
+### CRX 文件
 
-1. [Download the CRX file](https://github.com/todrfu/sync-storage/actions/runs/13216106879)
-2. Open Chrome DevTools and click the extension icon in the toolbar
-3. Click the "Load unpacked" button
-4. Select the CRX file
-
+1. [下载 CRX 文件](CRX_PLACEHOLDER_URL)
+2. 打开 Chrome 开发者工具，点击工具栏中的扩展图标
+3. 点击"加载已解压的扩展"按钮
+4. 选择 CRX 文件
 
 ![](./demo.gif)
